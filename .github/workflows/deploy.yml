@@ -14,7 +14,7 @@ jobs:
     environment:
       name: production
       # Puedes definir una URL si tu app ya está en producción
-      url: https://mi-dominio.com 
+      url: http://192.168.0.19
 
     steps:
       - name: Checkout repo
