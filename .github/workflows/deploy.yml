@@ -31,4 +31,4 @@ jobs:
         with:
           context: .
           push: true
-          tags: yourdockerhubuser/my-python-app:latest
+          tags: mscjaime/my-python-app:latest
