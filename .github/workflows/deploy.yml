@@ -1,4 +1,4 @@
-name: Build and Deploy
+name: Build and Push to Docker Hub
 
 on:
   push:
@@ -6,19 +6,29 @@ on:
       - main
 
 jobs:
-  build-and-deploy:
-    runs-on: self-hosted
+  build:
+    name: Build and Push
+    runs-on: ubuntu-latest
+
+    # Asocia este job con el environment protegido
+    environment:
+      name: production
+      # Puedes definir una URL si tu app ya está en producción
+      url: https://mi-dominio.com 
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+      - name: Checkout repo
+        uses: actions/checkout@v4
 
-    - name: Build Docker image
-      run: |
-        docker build -t python-app:latest .
-        docker tag python-app:latest localhost:5000/python-app:latest
-        docker push localhost:5000/python-app:latest
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-    - name: Deploy to Kubernetes
-      run: |
-        kubectl apply -f k8s/deployment.yaml
+      - name: Build and Push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: yourdockerhubuser/my-python-app:latest
